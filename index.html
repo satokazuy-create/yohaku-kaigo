@@ -1,0 +1,578 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>隕ｪ縺ｮ閠√＞豌励▼縺阪メ繧ｧ繝・け・・4蝠冗沿・・/title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #fafafa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* ===== 繝倥ャ繝繝ｼ ===== */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px 0;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* ===== 騾ｲ謐励ヰ繝ｼ ===== */
+    .progress-section {
+      margin-bottom: 30px;
+    }
+
+    .progress-text {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background-color: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: #4caf50;
+      transition: width 0.3s ease;
+    }
+
+    /* ===== 雉ｪ蝠上そ繧ｯ繧ｷ繝ｧ繝ｳ ===== */
+    .questions-section {
+      display: none;
+    }
+
+    .questions-section.active {
+      display: block;
+    }
+
+    .domain-header {
+      background-color: #f5f5f5;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      border-left: 4px solid #4caf50;
+    }
+
+    .domain-header h2 {
+      font-size: 18px;
+      color: #222;
+    }
+
+    .question-item {
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .question-item:last-child {
+      border-bottom: none;
+    }
+
+    .question-number {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 6px;
+    }
+
+    .question-text {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .scale-options {
+      display: flex;
+      gap: 8px;
+    }
+
+    .scale-option {
+      flex: 1;
+      text-align: center;
+    }
+
+    .scale-option input[type="radio"] {
+      display: none;
+    }
+
+    .scale-option label {
+      display: block;
+      padding: 12px 8px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #666;
+      transition: all 0.2s ease;
+    }
+
+    .scale-option input[type="radio"]:checked + label {
+      background-color: #4caf50;
+      color: white;
+      border-color: #4caf50;
+    }
+
+    .scale-option label:hover {
+      border-color: #4caf50;
+    }
+
+    /* ===== 繝懊ち繝ｳ ===== */
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 40px;
+    }
+
+    button {
+      flex: 1;
+      padding: 14px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #45a049;
+    }
+
+    .btn-primary:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background-color: #d0d0d0;
+    }
+
+    /* ===== 邨先棡逕ｻ髱｢ ===== */
+    .result-section {
+      display: none;
+    }
+
+    .result-section.active {
+      display: block;
+    }
+
+    .result-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .result-header h2 {
+      font-size: 24px;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .result-header p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .result-chart {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .scores-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .score-card {
+      background-color: white;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .score-card-domain {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 6px;
+    }
+
+    .score-card-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #4caf50;
+      margin-bottom: 4px;
+    }
+
+    .score-card-label {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .feedback-section {
+      background-color: #f9fff9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      border-left: 4px solid #4caf50;
+    }
+
+    .feedback-explanation {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e0e0e0;
+      line-height: 1.6;
+    }
+
+    .feedback-type {
+      font-size: 18px;
+      color: #4caf50;
+      font-weight: 700;
+      margin-bottom: 16px;
+      margin-top: 8px;
+    }
+
+    .feedback-insight-label {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+
+    .feedback-insight {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 16px;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    .feedback-action-label {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+
+    .feedback-action {
+      background-color: white;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 15px;
+      color: #333;
+      border: 1px solid #e0e0e0;
+      line-height: 1.6;
+    }
+
+    .consultation-section {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+
+    .consultation-section p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .consultation-link {
+      display: inline-block;
+      background-color: #ff9800;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .consultation-link:hover {
+      background-color: #f57c00;
+    }
+
+    .recheck-message {
+      background-color: #e3f2fd;
+      padding: 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #1565c0;
+      margin-bottom: 30px;
+      border-left: 4px solid #1976d2;
+    }
+
+    /* ===== 蜀阪メ繧ｧ繝・け逕ｻ髱｢ ===== */
+    .recheck-section {
+      display: none;
+    }
+
+    .recheck-section.active {
+      display: block;
+    }
+
+    .recheck-questions {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .recheck-question {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .recheck-question:last-child {
+      border-bottom: none;
+    }
+
+    .recheck-question label {
+      display: block;
+      font-size: 15px;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .recheck-question textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .comparison-section {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+
+    .comparison-header {
+      font-size: 16px;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 16px;
+    }
+
+    .comparison-item {
+      margin-bottom: 12px;
+      padding: 12px;
+      background-color: #f5f5f5;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .comparison-domain {
+      font-size: 14px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .comparison-change {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .comparison-change.improved {
+      color: #4caf50;
+    }
+
+    .comparison-change.worsened {
+      color: #ff5252;
+    }
+
+    /* ===== 繝ｭ繝ｼ繝・ぅ繝ｳ繧ｰ ===== */
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #4caf50;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ===== 繝ｬ繧ｹ繝昴Φ繧ｷ繝・===== */
+    @media (max-width: 640px) {
+      .container {
+        padding: 16px;
+      }
+
+      .header h1 {
+        font-size: 20px;
+      }
+
+      .scores-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ===== 繝倥ャ繝繝ｼ ===== -->
+    <div class="header">
+      <h1>隕ｪ縺ｮ閠√＞豌励▼縺阪メ繧ｧ繝・け</h1>
+      <p>莉玖ｭｷ蜑肴ｮｵ髫弱〒縺ゅ↑縺溘・縲御ｽ咏區縲阪ｒ隕九▽繧√ｋ繝√ぉ繝・け</p>
+    </div>
+
+    <!-- ===== 雉ｪ蝠上そ繧ｯ繧ｷ繝ｧ繝ｳ ===== -->
+    <div class="questions-section active" id="questionsSection">
+      <div class="progress-section">
+        <div class="progress-text">
+          <span id="answeredCount">0</span> / 24 蝗樒ｭ疲ｸ医∩
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div id="domainsContainer"></div>
+
+      <div class="button-group">
+        <button class="btn-secondary" id="prevBtn" onclick="app.previousDomain()">竊・蜑阪∈</button>
+        <button class="btn-primary" id="nextBtn" onclick="app.nextDomain()">谺｡縺ｸ 竊・/button>
+      </div>
+    </div>
+
+    <!-- ===== 邨先棡繧ｻ繧ｯ繧ｷ繝ｧ繝ｳ ===== -->
+    <div class="result-section" id="resultSection">
+      <div class="result-header">
+        <h2>縺ゅ↑縺溘・繧ｿ繧､繝・/h2>
+        <p id="resultDate"></p>
+      </div>
+
+      <div id="resultChart"></div>
+
+      <div class="scores-grid" id="scoresGrid"></div>
+
+      <div class="feedback-section" id="feedbackSection"></div>
+
+      <div class="consultation-section">
+        <p id="consultationMessage"></p>
+        <a class="consultation-link" id="consultationLink" href="#" target="_blank">
+          50蛻・が繝ｳ繝ｩ繧､繝ｳ逶ｸ隲・ｒ莠育ｴ・☆繧・        </a>
+      </div>
+
+      <div id="recheckMessage"></div>
+
+      <div class="button-group">
+        <button class="btn-secondary" onclick="app.goToTop()">繧ゅ≧荳蠎ｦ繝√ぉ繝・け縺吶ｋ</button>
+        <button class="btn-primary" id="recheckBtn" onclick="app.startRecheck()" style="display: none;">蜀阪メ繧ｧ繝・け繧偵☆繧・/button>
+      </div>
+    </div>
+
+    <!-- ===== 蜀阪メ繧ｧ繝・け繧ｻ繧ｯ繧ｷ繝ｧ繝ｳ ===== -->
+    <div class="recheck-section" id="recheckSection">
+      <div class="result-header">
+        <h2>蜀阪メ繧ｧ繝・け</h2>
+        <p>1縺区怦縺ｮ螟牙喧繧呈険繧願ｿ斐▲縺ｦ縺ｿ縺ｾ縺励ｇ縺・/p>
+      </div>
+
+      <div class="comparison-section" id="comparisonSection"></div>
+
+      <div class="recheck-questions" id="recheckQuestionsContainer"></div>
+
+      <div class="button-group">
+        <button class="btn-secondary" onclick="app.goToTop()">繝医ャ繝励↓謌ｻ繧・/button>
+        <button class="btn-primary" onclick="app.submitRecheck()">蜀阪メ繧ｧ繝・け邨先棡繧剃ｿ晏ｭ倥☆繧・/button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Chart.js ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- ===== Config ===== -->
+  <script>
+    window.CHECK24_CONFIG = ;
+  </script>
+
+  <!-- ===== 繧ｹ繧ｯ繝ｪ繝励ヨ ===== -->
+  <script src="js/storage.js"></script>
+  <script src="js/scoring.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+

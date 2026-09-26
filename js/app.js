@@ -192,8 +192,23 @@ const app = {
    */
   submit() {
     // 全問回答確認
-    if (Object.keys(this.answers).length < 24) {
-      alert('すべての質問にお答えください。');
+    const answeredCount = Object.keys(this.answers).length;
+
+    if (answeredCount < 24) {
+      // 未回答の質問を特定
+      const unansweredQuestions = [];
+      for (let i = 1; i <= 24; i++) {
+        if (this.answers[i] === undefined) {
+          unansweredQuestions.push(i);
+        }
+      }
+
+      // 未回答の質問をハイライト
+      this.highlightUnansweredQuestions(unansweredQuestions);
+
+      // アラート表示
+      const count = 24 - answeredCount;
+      alert(`${count}個の質問がまだ回答されていません。赤くハイライトされている質問にお答えください。`);
       return;
     }
 
@@ -209,6 +224,32 @@ const app = {
 
     // 結果画面を表示
     this.showResult();
+  },
+
+  /**
+   * 未回答の質問をハイライト
+   */
+  highlightUnansweredQuestions(questionIds) {
+    // まず、すべてのハイライトを削除
+    document.querySelectorAll('.question-item').forEach(item => {
+      item.classList.remove('unanswered');
+    });
+
+    // 未回答の質問をハイライト
+    questionIds.forEach(qId => {
+      const questionElement = document.querySelector(`.question-item:has(input[name="q${qId}"])`);
+      if (questionElement) {
+        questionElement.classList.add('unanswered');
+      }
+    });
+
+    // 最初の未回答箇所へスクロール
+    if (questionIds.length > 0) {
+      const firstUnanswered = document.querySelector(`.question-item:has(input[name="q${questionIds[0]}"])`);
+      if (firstUnanswered) {
+        firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
   },
 
   /**
@@ -302,6 +343,15 @@ const app = {
       return '#f44336'; // かなり減っている（赤）
     });
 
+    // スケール動的調整：困っているレベルに応じて範囲を変更
+    const maxScore = Math.max(...Object.values(scores));
+    let chartMax = 9;
+    if (maxScore <= 2) {
+      chartMax = 3; // 余白が十分にある場合は小さいスケール
+    } else if (maxScore <= 5) {
+      chartMax = 6; // 少し減っている場合は中程度のスケール
+    }
+
     const ctx = document.getElementById('radarCanvas').getContext('2d');
 
     new Chart(ctx, {
@@ -327,15 +377,15 @@ const app = {
         scales: {
           r: {
             beginAtZero: true,
-            max: 9,
+            max: chartMax,
             min: 0,
             ticks: {
-              stepSize: 3,
+              stepSize: chartMax === 3 ? 1 : (chartMax === 6 ? 2 : 3),
               font: { size: 12 },
               callback: function(value) {
-                // 軸ラベルを反転表示
+                // 軸ラベル：中心は「多い」（スコア高＝困っている）、外輪は「少ない」（スコア低＝余白がある）
                 if (value === 0) return '多い';
-                if (value === 9) return '少ない';
+                if (value === chartMax) return '少ない';
                 return value;
               }
             },
@@ -391,17 +441,34 @@ const app = {
   renderConsultation() {
     const consultation = this.config.consultation;
 
+    // 準備中判定
+    const isPreparing = consultation.status === 'preparing';
+
     // より詳しい説明に変更
-    const consultationMessage = document.getElementById('consultationMessage');
-    consultationMessage.innerHTML = `
-      <strong>介護が始まる前に、今から相談することで</strong><br>
-      親との関係、仕事との両立、家族間の調整を整理できます。<br>
-      小さな不安や疑問も、プロに相談することで道が見えてきます。
-    `;
+    const consultationMessageText = document.getElementById('consultationMessageText');
+    if (isPreparing) {
+      consultationMessageText.innerHTML = `
+        <strong>${consultation.subtitle}</strong><br>
+        親の老いや介護について、不安や疑問がある時には<br>
+        いつでも相談できるサービスの準備を進めています。
+      `;
+    } else {
+      consultationMessageText.innerHTML = `
+        <strong>介護が始まる前に、今から相談することで</strong><br>
+        親との関係、仕事との両立、家族間の調整を整理できます。<br>
+        小さな不安や疑問も、プロに相談することで道が見えてきます。
+      `;
+    }
 
     // 参考情報セクションを追加
     const consultationSection = document.querySelector('.consultation-section');
     const link = document.getElementById('consultationLink');
+
+    // consultationLink が見つからない場合はスキップ
+    if (!link || !consultationSection) {
+      console.warn('consultationSection or consultationLink not found');
+      return;
+    }
 
     // 既存の参考情報セクションを削除（複数回呼び出し対策）
     const existingRef = consultationSection.querySelector('[style*="f5f5f5"]');
@@ -410,7 +477,7 @@ const app = {
     // config から参考情報を取得して表示
     const references = consultation.references || [];
 
-    if (references.length > 0) {
+    if (references.length > 0 && !isPreparing) {
       const refDiv = document.createElement('div');
       refDiv.style.backgroundColor = '#f5f5f5';
       refDiv.style.padding = '16px';
@@ -436,8 +503,21 @@ const app = {
       link.parentNode.insertBefore(refDiv, link);
     }
 
-    link.textContent = consultation.duration + 'オンライン相談を予約する';
-    link.href = consultation.url;
+    // ボタン表示・非表示の切り替え
+    if (isPreparing) {
+      link.textContent = '準備中...';
+      link.href = '#';
+      link.style.opacity = '0.6';
+      link.style.cursor = 'not-allowed';
+      link.disabled = true;
+      link.onclick = (e) => e.preventDefault();
+    } else {
+      link.textContent = consultation.duration + 'オンライン相談を予約する';
+      link.href = consultation.url;
+      link.style.opacity = '1';
+      link.style.cursor = 'pointer';
+      link.disabled = false;
+    }
   },
 
   /**
@@ -445,6 +525,11 @@ const app = {
    */
   renderRecheckMessage(initialDate) {
     const messageDiv = document.getElementById('recheckMessage');
+    if (!messageDiv) {
+      console.warn('recheckMessage element not found');
+      return;
+    }
+
     const message = this.config.recheck.message;
 
     const initialDate30daysLater = new Date(initialDate);
@@ -591,10 +676,12 @@ const app = {
     this.currentDomainIndex = 0;
     this.result = null;
 
-    // 初期状態に戻す
-    this.init();
+    // 質問画面を表示
+    document.getElementById('questionsSection').classList.add('active');
+    this.renderQuestions();
   }
 };
 
 // ページ読み込み時に初期化
-document.addEventListener('DOMContentLoaded', () => app.init());
+// 注: index.html で config 読み込み後に app.init() を呼び出すため、ここではコメントアウト
+// document.addEventListener('DOMContentLoaded', () => app.init());

@@ -1,0 +1,49 @@
+# 秘密情報
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.pfx
+
+# OS ファイル
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# エディタ
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ノード関連（将来的な備え）
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# ビルド生成物
+dist/
+build/
+*.min.js
+*.min.css
+
+# キャッシュ
+.cache/
+.npm/
+
+# ログファイル
+*.log
+debug.log
+
+# 開発用
+.DS_Store
+*.bak
+*.tmp
+
+# IDE設定
+*.code-workspace
+.vscode/*
+!.vscode/settings.json

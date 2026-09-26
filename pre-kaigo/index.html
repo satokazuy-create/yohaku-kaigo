@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>親の老い気づきチェック（24問版）</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #fafafa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px 0;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .progress-section {
+      margin-bottom: 30px;
+    }
+
+    .progress-text {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background-color: #e0e0e0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: #2196F3;
+      transition: width 0.3s ease;
+    }
+
+    .questions-section {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .questions-section.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .domain-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2196F3;
+      margin-bottom: 20px;
+    }
+
+    .question-group {
+      margin-bottom: 25px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .question-text {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .option:hover {
+      background-color: #f5f5f5;
+      border-color: #2196F3;
+    }
+
+    .option input {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .option label {
+      flex: 1;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .question-item.unanswered {
+      background-color: #ffebee;
+      border-left: 4px solid #f44336;
+      padding-left: 16px;
+      animation: highlight-pulse 0.6s ease-in-out;
+    }
+
+    @keyframes highlight-pulse {
+      0% {
+        background-color: #ffcdd2;
+      }
+      100% {
+        background-color: #ffebee;
+      }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 40px;
+      justify-content: space-between;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background-color: #2196F3;
+      color: white;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background-color: #1976D2;
+    }
+
+    .btn-secondary {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background-color: #d0d0d0;
+    }
+
+    .result-section {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .result-section.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .result-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .result-header h2 {
+      font-size: 20px;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .radar-chart-container {
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    .radar-chart {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .score-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .score-card {
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+    }
+
+    .score-card-title {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 5px;
+    }
+
+    .score-card-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2196F3;
+    }
+
+    .feedback-section {
+      margin: 30px 0;
+      padding: 0;
+      background-color: transparent;
+      border: none;
+      border-radius: 0;
+    }
+
+    .feedback-explanation {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 20px;
+      line-height: 1.6;
+      padding: 0;
+    }
+
+    .feedback-type {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2196F3;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #2196F3;
+    }
+
+    .feedback-insight-label,
+    .feedback-action-label {
+      font-size: 13px;
+      color: #fff;
+      font-weight: 700;
+      padding: 6px 12px;
+      display: inline-block;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .feedback-insight-label {
+      background-color: #2196F3;
+    }
+
+    .feedback-action-label {
+      background-color: #4CAF50;
+    }
+
+    .feedback-insight,
+    .feedback-action {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.8;
+      margin-bottom: 24px;
+      padding: 16px;
+      background-color: #fafafa;
+      border-left: 4px solid transparent;
+      border-radius: 4px;
+    }
+
+    .feedback-insight {
+      border-left-color: #2196F3;
+    }
+
+    .feedback-action {
+      border-left-color: #4CAF50;
+    }
+
+    .feedback-label {
+      font-size: 12px;
+      color: #2196F3;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .feedback-text {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .consultation-section {
+      margin: 30px 0;
+      padding: 20px;
+      background-color: #fff3e0;
+      border-radius: 8px;
+    }
+
+    .consultation-message {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .reference-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .reference-link {
+      display: inline-block;
+      padding: 10px;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      text-decoration: none;
+      color: #2196F3;
+      font-size: 13px;
+    }
+
+    .reference-link:hover {
+      background-color: #f5f5f5;
+    }
+
+    .consultation-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .consultation-button:hover {
+      background-color: #45a049;
+    }
+
+    .consultation-button.disabled {
+      background-color: #ccc;
+      color: #999;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .recheck-section {
+      display: none;
+    }
+
+    .recheck-section.active {
+      display: block;
+    }
+
+    .recheck-questions {
+      margin: 20px 0;
+    }
+
+    .recheck-question {
+      margin-bottom: 20px;
+    }
+
+    .recheck-question label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .recheck-question textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 13px;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .comparison-section {
+      margin: 20px 0;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #2196F3;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>親の変化に気づくチェック</h1>
+      <p>親の変化に気づき、今後のサポートを考える24問のセルフチェック</p>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-text"><span id="answeredCount">0</span>/24 回答済み</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div id="questionsSection" class="questions-section active">
+      <div id="domainsContainer"></div>
+      <div class="button-group">
+        <button class="btn btn-secondary" onclick="app.previousDomain()" id="prevBtn" style="display:none;">前へ</button>
+        <button class="btn btn-primary" onclick="app.nextDomain()" id="nextBtn">次へ</button>
+      </div>
+    </div>
+
+    <div id="resultSection" class="result-section">
+      <div class="result-header">
+        <h2>あなたのチェック結果</h2>
+        <p id="resultDate"></p>
+      </div>
+      <div id="radarChartContainer" class="radar-chart-container">
+        <div id="resultChart"></div>
+      </div>
+      <div id="scoresGrid" class="score-cards"></div>
+      <div id="feedbackSection" class="feedback-section"></div>
+      <div id="consultationMessage" class="consultation-section">
+        <div id="consultationMessageText" class="consultation-message"></div>
+        <div id="referenceLinksContainer" class="reference-links"></div>
+        <a id="consultationLink" class="consultation-button" href="#">50分オンライン相談</a>
+      </div>
+      <div class="button-group">
+        <button class="btn btn-secondary" onclick="app.goToTop()">トップに戻る</button>
+      </div>
+    </div>
+
+    <div id="recheckSection" class="recheck-section">
+      <div class="result-header">
+        <h2>再チェック結果</h2>
+        <p>前回のチェックからの変化を確認</p>
+      </div>
+      <div id="comparisonSection" class="comparison-section"></div>
+      <div id="recheckQuestionsContainer" class="recheck-questions"></div>
+      <div class="button-group">
+        <button class="btn btn-secondary" onclick="app.goToTop()">トップに戻る</button>
+        <button class="btn btn-primary" onclick="app.submitRecheck()">再チェック結果を保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <script>
+    // config/check-24.json を動的に読み込む
+    async function loadConfig() {
+      try {
+        const response = await fetch('config/check-24.json');
+        if (!response.ok) throw new Error('Failed to load config');
+        window.CHECK24_CONFIG = await response.json();
+        console.log('Config loaded from config/check-24.json');
+      } catch (error) {
+        console.error('Error loading config:', error);
+        alert('設定ファイルの読み込みに失敗しました');
+      }
+    }
+
+    // config を読み込んでから app を初期化
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', async () => {
+        await loadConfig();
+        app.init();
+      });
+    } else {
+      loadConfig().then(() => app.init());
+    }
+  </script>
+
+  <script src="js/storage.js"></script>
+  <script src="js/scoring.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+# セキュリティと適切なボット管理
+User-agent: *
+Disallow:
+
+# 主要検索エンジンは許可
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# 悪意のあるボット対策
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+# sitemap（生成されていない場合は不要）
+# Sitemap: https://satokazuy.github.io/yohaku-kaigo/sitemap.xml

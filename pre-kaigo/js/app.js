@@ -384,10 +384,10 @@ const app = {
               font: { size: 12 },
               callback: function(value) {
                 // データは反転済み（9 - score）なので：
-                // value=0（外輪）= 反転前のスコア9 = 困っていない = 少ない
-                // value=chartMax（中心）= 反転前のスコア0 = 困っている = 多い
-                if (value === 0) return '少ない';
-                if (value === chartMax) return '多い';
+                // value=0（中心）= 反転前のスコア9 = 困っている = 多い
+                // value=chartMax（外輪）= 反転前のスコア0 = 困っていない = 少ない
+                if (value === 0) return '多い';
+                if (value === chartMax) return '少ない';
                 return value;
               }
             },

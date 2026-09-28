@@ -383,9 +383,11 @@ const app = {
               stepSize: chartMax === 3 ? 1 : (chartMax === 6 ? 2 : 3),
               font: { size: 12 },
               callback: function(value) {
-                // 軸ラベル：中心は「多い」（スコア高＝困っている）、外輪は「少ない」（スコア低＝余白がある）
-                if (value === 0) return '多い';
-                if (value === chartMax) return '少ない';
+                // データは反転済み（9 - score）なので：
+                // value=0（外輪）= 反転前のスコア9 = 困っていない = 少ない
+                // value=chartMax（中心）= 反転前のスコア0 = 困っている = 多い
+                if (value === 0) return '少ない';
+                if (value === chartMax) return '多い';
                 return value;
               }
             },
